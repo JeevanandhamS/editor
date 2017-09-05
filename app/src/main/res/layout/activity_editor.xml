@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="?attr/colorPrimary"
+        app:popupTheme="@style/AppTheme.PopupOverlay" />
+
+    <com.commonsware.cwac.richedit.RichEditText
+        android:id="@+id/editor"
+        android:layout_width="fill_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:gravity="top"
+        android:background="@color/editorBgColor"
+        android:imeOptions="flagNoExtractUi"
+        android:padding="@dimen/editor_text_padding"
+        android:inputType="textNoSuggestions|textMultiLine"
+        android:textColor="@color/editorTextColor"
+        android:textSize="@dimen/preview_text_size" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/line_height"
+        android:background="@color/lineColor" />
+
+    <TextView
+        android:id="@+id/editor_tv_word_count"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/word_count_layout_height"
+        android:gravity="right|center_vertical"
+        android:paddingRight="@dimen/preview_text_padding"
+        android:textColor="@color/editorBgColor"
+        android:textSize="@dimen/word_count_text_size" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/line_height"
+        android:background="@color/lineColor" />
+
+    <LinearLayout
+        android:id="@+id/editor_actions"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/editor_action_layout_height"
+        android:layout_alignParentBottom="true"
+        android:orientation="horizontal">
+
+        <include layout="@layout/editor_actions" />
+
+    </LinearLayout>
+
+</LinearLayout>

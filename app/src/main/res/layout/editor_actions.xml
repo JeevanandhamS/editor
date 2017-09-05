@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <ImageView
+        android:id="@+id/actions_ibtn_bold"
+        style="@style/EditorActionStyle"
+        android:onClick="onClickBold"
+        android:src="@drawable/ic_format_bold_black_24dp" />
+
+    <ImageView
+        android:id="@+id/actions_ibtn_italic"
+        style="@style/EditorActionStyle"
+        android:onClick="onClickItalic"
+        android:src="@drawable/ic_format_italic_black_24dp" />
+
+    <ImageView
+        android:id="@+id/actions_ibtn_underline"
+        style="@style/EditorActionStyle"
+        android:onClick="onClickUnderline"
+        android:src="@drawable/ic_format_underlined_black_24dp" />
+
+    <ImageView
+        android:id="@+id/actions_ibtn_left"
+        style="@style/EditorActionStyle"
+        android:onClick="onClickLeftAlign"
+        android:src="@drawable/ic_format_align_left_black_24dp" />
+
+    <ImageView
+        android:id="@+id/actions_ibtn_center"
+        style="@style/EditorActionStyle"
+        android:onClick="onClickCenterAlign"
+        android:src="@drawable/ic_format_align_center_black_24dp" />
+
+    <ImageView
+        android:id="@+id/actions_ibtn_right"
+        style="@style/EditorActionStyle"
+        android:onClick="onClickRightAlign"
+        android:src="@drawable/ic_format_align_right_black_24dp" />
+
+    <ImageView
+        android:id="@+id/actions_ibtn_bullet"
+        style="@style/EditorActionStyle"
+        android:onClick="onClickBullet"
+        android:src="@drawable/ic_format_list_bulleted_black_24dp" />
+
+    <ImageView
+        android:id="@+id/actions_ibtn_quote"
+        style="@style/EditorActionStyle"
+        android:onClick="onClickBlockQuote"
+        android:src="@drawable/ic_format_quote_black_24dp" />
+
+</merge>

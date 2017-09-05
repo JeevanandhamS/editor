@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#3F51B5</color>
+    <color name="colorPrimaryDark">#303F9F</color>
+    <color name="colorAccent">#FF4081</color>
+
+    <color name="actionTintColor">#F4F4F4</color>
+
+    <color name="editorBgColor">#F4F4F4</color>
+    <color name="editorTextColor">#333333</color>
+
+    <color name="previewBgColor">#F4F4F4</color>
+    <color name="previewTextColor">#333333</color>
+
+    <color name="lineColor">#808080</color>
+</resources>
