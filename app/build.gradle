@@ -23,4 +23,14 @@ dependencies {
     compile 'com.android.support:appcompat-v7:26.+'
     compile 'com.android.support:design:26.+'
     compile project(':editor')
+
+
+    compile('com.squareup.retrofit2:retrofit:2.3.0') {
+        // exclude Retrofit’s OkHttp peer-dependency module and define your own module import
+        exclude module: 'okhttp'
+    }
+    compile 'com.squareup.retrofit2:converter-gson:2.3.0'
+    compile 'com.squareup.okhttp3:logging-interceptor:3.8.0'
+    compile 'com.squareup.okhttp3:okhttp:3.8.0'
+    compile 'org.jsoup:jsoup:1.10.3'
 }

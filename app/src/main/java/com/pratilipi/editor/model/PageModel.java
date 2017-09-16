@@ -7,7 +7,6 @@ public interface PageModel {
 
     void loadInitialPage();
 
-
     void savePage(String htmlContent);
 
     void discardPage();

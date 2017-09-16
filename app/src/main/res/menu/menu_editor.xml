@@ -2,18 +2,27 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
+        android:id="@+id/menu_add_image"
+        android:title="Add Image"
+        android:icon="@drawable/ic_format_bold_black_24dp"
+        app:showAsAction="always"/>
+
+    <item
         android:id="@+id/menu_save"
         android:title="@string/menu_save"
-        app:showAsAction="never" />
+        app:showAsAction="never"
+        android:visible="false"/>
 
     <item
         android:id="@+id/menu_submit"
         android:title="@string/menu_submit"
-        app:showAsAction="never" />
+        app:showAsAction="never"
+        android:visible="false"/>
 
     <item
         android:id="@+id/menu_discard"
         android:title="@string/menu_discard"
-        app:showAsAction="never" />
+        app:showAsAction="never"
+        android:visible="false"/>
 
 </menu>

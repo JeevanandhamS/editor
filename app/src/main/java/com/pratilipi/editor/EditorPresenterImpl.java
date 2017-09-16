@@ -65,6 +65,7 @@ public class EditorPresenterImpl implements EditorPresenter, PageModelImpl.OnPag
     @Override
     public void onPageSaved() {
         mEditorView.showPageSavedMessage();
+        mEditorView.startSync();
     }
 
     @Override

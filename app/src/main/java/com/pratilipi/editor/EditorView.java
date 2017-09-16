@@ -14,4 +14,6 @@ public interface EditorView {
     void setWordCount(int wordCount);
 
     void navigateToPreview(int pageId);
+
+    void startSync();
 }

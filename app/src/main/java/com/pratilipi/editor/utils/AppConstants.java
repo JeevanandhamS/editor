@@ -17,5 +17,6 @@ public interface AppConstants {
 
     interface SharedKeys {
         String PAGE_ID = "pageId";
+        String SYNC_LIST = "syncList";
     }
 }

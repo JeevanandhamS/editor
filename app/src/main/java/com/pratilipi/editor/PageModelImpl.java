@@ -6,6 +6,12 @@ import com.pratilipi.editor.database.MyDbHandler;
 import com.pratilipi.editor.database.Page;
 import com.pratilipi.editor.model.PageModel;
 import com.pratilipi.editor.preferences.PagePreferences;
+import com.pratilipi.editor.rest.PageDto;
+import com.pratilipi.editor.rest.RestServiceFactory;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 import static com.pratilipi.editor.utils.AppConstants.INVALID_ID;
 
@@ -15,6 +21,8 @@ import static com.pratilipi.editor.utils.AppConstants.INVALID_ID;
 public class PageModelImpl implements PageModel {
 
     private static final String TAG = PageModel.class.getSimpleName();
+
+    private static final String PRATILIPI_ID = "5936574609489920";
 
     private int mPageId = INVALID_ID;
 
@@ -47,6 +55,19 @@ public class PageModelImpl implements PageModel {
                 Log.d(TAG, "Existing Page --> " + page.getContent());
                 mPageModelListener.onGetPageContent(page.getContent());
             }
+        } else {
+            RestServiceFactory.getInstance().getPage(PRATILIPI_ID)
+                    .enqueue(new Callback<PageDto>() {
+                        @Override
+                        public void onResponse(Call<PageDto> call, Response<PageDto> response) {
+                            String htmlContent = response.body().getSummary();
+                            savePage(htmlContent);
+                            mPageModelListener.onGetPageContent(htmlContent);
+                        }
+
+                        @Override
+                        public void onFailure(Call<PageDto> call, Throwable t) {}
+                    });
         }
     }
 
@@ -63,6 +84,8 @@ public class PageModelImpl implements PageModel {
             page.setPageId(mPageId);
             mMyDbHandler.updateContent(page);
         }
+
+        mPagePreferences.saveSyncId(String.valueOf(mPageId));
 
         mPageModelListener.onPageSaved();
     }

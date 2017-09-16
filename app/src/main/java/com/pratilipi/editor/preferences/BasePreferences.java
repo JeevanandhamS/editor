@@ -3,6 +3,10 @@ package com.pratilipi.editor.preferences;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import com.google.gson.Gson;
+
+import java.lang.reflect.Type;
+
 import static android.content.Context.MODE_PRIVATE;
 import static com.pratilipi.editor.utils.AppConstants.EMPTY;
 import static com.pratilipi.editor.utils.AppConstants.INVALID_ID;
@@ -57,6 +61,19 @@ public class BasePreferences {
     public void setBoolean(String key, boolean value) {
         mPrefsEditor.putBoolean(key, value);
         applyEditor();
+    }
+
+    public void saveObject(String tag, Object object) {
+        Gson gson = new Gson();
+        String json = gson.toJson(object);
+        mPrefsEditor.putString(tag, json);
+        mPrefsEditor.commit();
+    }
+
+    public Object getObject(String tag, Type name) {
+        Gson gson = new Gson();
+        String json = getString(tag);
+        return gson.fromJson(json, name);
     }
 
     public void clear(String key) {

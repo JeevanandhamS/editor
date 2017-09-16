@@ -2,6 +2,7 @@
 
     <string name="app_name">Pratilipi Editor</string>
     <string name="preview_label">Preview</string>
+    <string name="internal_storage">Internal Storage</string>
     <string name="word_count_prefix">Word Count : %d</string>
 
     <!-- Menu Options -->
@@ -12,5 +13,7 @@
     <!-- Alert Messages -->
     <string name="page_saved">Page saved successfully</string>
     <string name="page_discarded">Page discarded successfully</string>
+
+    <string name="image_pick_failed">Image pick failed</string>
 
 </resources>

@@ -1,32 +1,37 @@
 package com.pratilipi.editor;
 
+import android.app.Activity;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
-import android.text.Layout.Alignment;
+import android.text.Html;
 import android.text.Spannable;
+import android.text.SpannableString;
+import android.text.Spanned;
 import android.text.TextWatcher;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.TextView.BufferType;
 import android.widget.Toast;
 
-import com.commonsware.cwac.richedit.BulletEffect;
-import com.commonsware.cwac.richedit.Effect;
-import com.commonsware.cwac.richedit.LineAlignmentEffect;
-import com.commonsware.cwac.richedit.QuoteEffect;
-import com.commonsware.cwac.richedit.RichEditText;
 import com.pratilipi.editor.database.MyDbHandler;
 import com.pratilipi.editor.preferences.PagePreferences;
+import com.pratilipi.editor.sync.SyncService;
 import com.pratilipi.editor.utils.AppConstants.BundleKeys;
 import com.pratilipi.editor.utils.CodeSnippet;
+import com.pratilipi.editor.utils.FileUtils;
+import com.pratilipi.editor.utils.URLImageParser;
 
-import java.util.List;
+import java.io.File;
 import java.util.Locale;
 
 import static com.pratilipi.editor.utils.AppConstants.EMPTY;
@@ -37,7 +42,9 @@ import static com.pratilipi.editor.utils.AppConstants.ZERO;
  */
 public class EditorActivity extends AppCompatActivity implements EditorView {
 
-    private RichEditText mEditor;
+    private static final int PICK_SCREENSHOT = 23;
+
+    private EditText mEditor;
 
     private TextView mTvWordCount;
 
@@ -52,6 +59,8 @@ public class EditorActivity extends AppCompatActivity implements EditorView {
     private ImageView mIvBlockQuote;
 
     private String mWordCountPrefix;
+
+    private URLImageParser mImageParser;
 
     private EditorPresenter mEditorPresenter;
 
@@ -69,6 +78,8 @@ public class EditorActivity extends AppCompatActivity implements EditorView {
         initEditor();
 
         initPresenter();
+
+        checkStoragePermission();
     }
 
     private void initToolBar() {
@@ -92,7 +103,8 @@ public class EditorActivity extends AppCompatActivity implements EditorView {
     }
 
     private void initEditor() {
-        mEditor = (RichEditText) findViewById(R.id.editor);
+        mEditor = (EditText) findViewById(R.id.editor);
+        mImageParser = new URLImageParser(mEditor, this);
         mEditor.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
@@ -102,10 +114,11 @@ public class EditorActivity extends AppCompatActivity implements EditorView {
 
             @Override
             public void afterTextChanged(Editable editable) {
-                mEditorPresenter.onEditorUpdated(editable.toString());
+//                mEditorPresenter.onEditorUpdated(editable.toString());
             }
         });
-        mEditor.setOnSelectionChangedListener(new RichEditText.OnSelectionChangedListener() {
+
+        /*mEditor.setOnSelectionChangedListener(new RichEditText.OnSelectionChangedListener() {
             @Override
             public void onSelectionChanged(int start, int end, List<Effect<?>> effects) {
                 boolean foundEffect = false;
@@ -141,7 +154,7 @@ public class EditorActivity extends AppCompatActivity implements EditorView {
                     setBulletEnabled(true);
                 }
             }
-        });
+        });*/
     }
 
     private void initPresenter() {
@@ -162,64 +175,73 @@ public class EditorActivity extends AppCompatActivity implements EditorView {
                 mEditorPresenter.onSubmit(getEditorHtmlContent());
                 return true;
             case R.id.menu_save:
-                mEditorPresenter.onSave(getEditorHtmlContent());
+                save();
                 return true;
             case R.id.menu_discard:
                 mEditor.setText(EMPTY);
                 mEditorPresenter.onDiscard();
+                return true;
+            case R.id.menu_add_image:
+                onClickImageButton();
                 return true;
         }
 
         return super.onOptionsItemSelected(item);
     }
 
+    private void save() {
+        mEditorPresenter.onSave(getEditorHtmlContent());
+    }
+
     @Override
     protected void onDestroy() {
         super.onDestroy();
+
+        save();
         mEditorPresenter.destroy();
     }
 
     public void onClickBold(View view) {
-        mEditor.toggleEffect(RichEditText.BOLD);
+//        mEditor.toggleEffect(RichEditText.BOLD);
         removeSelection();
     }
 
     public void onClickItalic(View view) {
-        mEditor.toggleEffect(RichEditText.ITALIC);
+//        mEditor.toggleEffect(RichEditText.ITALIC);
         removeSelection();
     }
 
     public void onClickUnderline(View view) {
-        mEditor.toggleEffect(RichEditText.UNDERLINE);
+//        mEditor.toggleEffect(RichEditText.UNDERLINE);
         removeSelection();
     }
 
     public void onClickLeftAlign(View view) {
-        mEditor.applyEffect(RichEditText.LINE_ALIGNMENT, Alignment.ALIGN_NORMAL);
+//        mEditor.applyEffect(RichEditText.LINE_ALIGNMENT, Alignment.ALIGN_NORMAL);
         notifySelectionChange();
         removeSelection();
     }
 
     public void onClickCenterAlign(View view) {
-        mEditor.applyEffect(RichEditText.LINE_ALIGNMENT, Alignment.ALIGN_CENTER);
+//        mEditor.applyEffect(RichEditText.LINE_ALIGNMENT, Alignment.ALIGN_CENTER);
         notifySelectionChange();
         removeSelection();
     }
 
     public void onClickRightAlign(View view) {
-        mEditor.applyEffect(RichEditText.LINE_ALIGNMENT, Alignment.ALIGN_OPPOSITE);
+//        mEditor.applyEffect(RichEditText.LINE_ALIGNMENT, Alignment.ALIGN_OPPOSITE);
         notifySelectionChange();
         removeSelection();
     }
 
     public void onClickBullet(View view) {
-        mEditor.toggleEffect(RichEditText.BULLET);
+//        mEditor.toggleEffect(RichEditText.BULLET);
         notifySelectionChange();
         removeSelection();
     }
 
     public void onClickBlockQuote(View view) {
-        mEditor.toggleEffect(RichEditText.QUOTE);
+//        mEditor.toggleEffect(RichEditText.QUOTE);
         notifySelectionChange();
         removeSelection();
     }
@@ -229,7 +251,7 @@ public class EditorActivity extends AppCompatActivity implements EditorView {
     }
 
     private void notifySelectionChange() {
-        mEditor.onSelectionChanged(mEditor.getSelectionStart(), mEditor.getSelectionEnd());
+//        mEditor.onSelectionChanged(mEditor.getSelectionStart(), mEditor.getSelectionEnd());
     }
 
     private void setAlignmentEnabled(boolean enabled) {
@@ -267,7 +289,9 @@ public class EditorActivity extends AppCompatActivity implements EditorView {
 
     @Override
     public void setEditorContent(String htmlContent) {
-        Spannable spannable = CodeSnippet.convertToSpan(htmlContent);
+        CodeSnippet.getImagePath(htmlContent);
+
+        Spannable spannable = new SpannableString(Html.fromHtml(htmlContent, mImageParser, null));
         mEditor.setText(spannable, BufferType.SPANNABLE);
     }
 
@@ -283,6 +307,11 @@ public class EditorActivity extends AppCompatActivity implements EditorView {
         startActivity(intent);
     }
 
+    @Override
+    public void startSync() {
+        SyncService.start(this);
+    }
+
     private String getEditorHtmlContent() {
         mEditor.clearComposingText();
         mEditor.clearFocus();
@@ -291,5 +320,63 @@ public class EditorActivity extends AppCompatActivity implements EditorView {
 
     private void showMessage(int msgResId) {
         Toast.makeText(this, msgResId, Toast.LENGTH_SHORT);
+    }
+
+    public void onClickImageButton() {
+        if(!checkStoragePermission()) {
+            return;
+        }
+
+        Intent intent = new Intent();
+        intent.setType("image/*");
+        intent.setAction(Intent.ACTION_GET_CONTENT);
+        try {
+            startActivityForResult(Intent.createChooser(intent, "Pick Image"), PICK_SCREENSHOT);
+        } catch (android.content.ActivityNotFoundException ex) {
+            // Potentially direct the user to the Market with a Dialog
+            showMessage(R.string.image_pick_failed);
+        }
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        /**
+         * get the selected screenshot image and pass it to help section
+         */
+        if (requestCode == PICK_SCREENSHOT
+                && resultCode == Activity.RESULT_OK
+                && data != null) {
+            Uri selectedImage = data.getData();
+            addImage(selectedImage);
+        }
+    }
+
+    private void addImage(final Uri selectedImage) {
+        int position = getCursorPosition();
+
+        File file = FileUtils.getFile(this, selectedImage);
+
+//        Spanned imageSpan = Html.fromHtml("<br><img src=\"" + "http://awallpapersimages.com/wp-content/uploads/2016/09/Sachin-Tendulkar-HD-Wallpapers-1.jpg" + "\">", mImageParser, null);
+        Spanned imageSpan = Html.fromHtml("<br><img src=\"" + file.getAbsolutePath() + "\"></img>", mImageParser, null);
+        mEditor.getText().insert(position, imageSpan);
+    }
+
+    private int getCursorPosition() {
+        return android.text.Selection.getSelectionStart(mEditor.getEditableText());
+    }
+
+    private boolean checkStoragePermission() {
+        if (Build.VERSION.SDK_INT >= 23) {
+            if (checkSelfPermission(android.Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                requestPermissions(new String[] {
+                        android.Manifest.permission.READ_EXTERNAL_STORAGE, android.Manifest.permission.READ_EXTERNAL_STORAGE},
+                        1
+                );
+                return false;
+            }
+        }
+        return true;
     }
 }
