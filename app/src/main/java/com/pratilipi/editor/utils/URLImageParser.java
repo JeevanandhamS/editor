@@ -4,7 +4,7 @@ import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.text.Html;
-import android.view.View;
+import android.widget.TextView;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -15,14 +15,14 @@ import java.net.URL;
 public class URLImageParser implements Html.ImageGetter {
 
     Context c;
-    View container;
+    TextView container;
 
     /***
      * Construct the URLImageParser which will execute AsyncTask and refresh the container
      * @param t
      * @param c
      */
-    public URLImageParser(View t, Context c) {
+    public URLImageParser(TextView t, Context c) {
         this.c = c;
         this.container = t;
     }
@@ -73,6 +73,7 @@ public class URLImageParser implements Html.ImageGetter {
 
             // redraw the image by invalidating the container
             URLImageParser.this.container.invalidate();
+            container.setText(container.getText());
         }
 
         /***
@@ -82,13 +83,16 @@ public class URLImageParser implements Html.ImageGetter {
          */
         public Drawable fetchDrawable(String urlString) {
             try {
-                if(!urlString.startsWith("http")) {
-                    return CodeSnippet.drawableFromFile(c.getResources(), urlString);
+                Drawable drawable;
+
+                if (urlString.startsWith("http")) {
+                    InputStream is = fetch(urlString);
+                    drawable = Drawable.createFromStream(is, "src");
+                } else {
+                    drawable = CodeSnippet.drawableFromFile(c.getResources(), urlString);
                 }
 
-                InputStream is = fetch(urlString);
-                Drawable drawable = Drawable.createFromStream(is, "src");
-                drawable.setBounds(0, 0, 0 + drawable.getIntrinsicWidth(), 0 
+                drawable.setBounds(0, 0, 0 + drawable.getIntrinsicWidth(), 0
                         + drawable.getIntrinsicHeight()); 
                 return drawable;
             } catch (Exception e) {

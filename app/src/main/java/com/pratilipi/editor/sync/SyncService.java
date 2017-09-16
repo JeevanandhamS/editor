@@ -142,7 +142,9 @@ public class SyncService extends Service {
                 .enqueue(new Callback<ImageUploadResponse>() {
                     @Override
                     public void onResponse(Call<ImageUploadResponse> call, Response<ImageUploadResponse> response) {
-                        mPageContent.replace(imagePathList.get(0), getImageUrl(response.body().getName()));
+                        if(response.code() == 200) {
+                            mPageContent.replace(imagePathList.get(0), getImageUrl(response.body().getName()));
+                        }
                         onImageSyncDone();
                     }
 

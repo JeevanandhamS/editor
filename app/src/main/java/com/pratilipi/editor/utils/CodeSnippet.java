@@ -118,7 +118,6 @@ public class CodeSnippet {
     public static Drawable drawableFromFile(Resources res, String path) {
         BitmapFactory.Options bmOptions = new BitmapFactory.Options();
         Bitmap bitmap = BitmapFactory.decodeFile(path, bmOptions);
-        bitmap = Bitmap.createScaledBitmap(bitmap, 100, 100, true);
 
         if(null == bitmap) {
             return null;
